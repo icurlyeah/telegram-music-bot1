@@ -152,18 +152,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["awaiting_confirmation"] = True
     return
 
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, filters
-import asyncio
+from telegram.ext import CallbackQueryHandler
 
-async def main():
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
+app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(lambda update, context: start(update.callback_query, context), pattern="^new_request$"))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+app.add_handler(CommandHandler("start", start))
+app.add_handler(CallbackQueryHandler(lambda update, context: start(update.callback_query, context), pattern="^new_request$"))
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    print("✅ Бот запущен. Полная логика готова.")
-    await app.run_polling()
-
-if __name__ == "__main__":
-    asyncio.run(main())
+print("✅ Бот запущен. Полная логика готова.")
+app.run_polling()
